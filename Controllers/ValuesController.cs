@@ -15,7 +15,7 @@ namespace InMemory.Caching.Controllers
             _memoryCache = memoryCache;
         }
 
-        [HttpGet]
+        [HttpGet("Set")]
         public void Set(string name)
         {
             _memoryCache.Set("name", name);
@@ -29,6 +29,22 @@ namespace InMemory.Caching.Controllers
                 return name.Substring(2);
             }
             return "";
+        }
+
+        [HttpGet("SetDate")]
+        public void SetDate(string name)
+        {
+            _memoryCache.Set("date", DateTime.Now, options: new()
+            {
+                AbsoluteExpiration = DateTime.Now.AddSeconds(30),
+                SlidingExpiration = TimeSpan.FromSeconds(5)
+            });
+        }
+
+        [HttpGet("GetDate")]   
+        public DateTime GetDate()
+        {
+            return _memoryCache.Get<DateTime>("date");
         }
     }
 }
